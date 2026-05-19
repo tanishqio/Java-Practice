@@ -44,27 +44,26 @@
 // System.out.println("Top student: " + sys.getTopStudent());
 
 
-import java.util.Hashmap;
 import java.util.ArrayList;
+import java.util.HashMap;
 
  class GradeSystem{
-    private HashMap<String,ArrayList<Integer>> map= new Hashmap<>();
+    private HashMap<String,ArrayList<Integer>> map= new HashMap<>();
     
     public void addStudent(String name){
         
          if(map.containsKey(name)){
-       map.put(name,new ArrayList<>());
-         }
-         else{
             throw new IllegalArgumentException("student already exists!");
+       
          }
+       map.put(name,new ArrayList<>());
+
+       
     }
     public void addMarks(String name,int marks){
         if(map.containsKey(name)){
              if(marks>=0 && marks<=100){
-                      ArrayList<Integer> m=map.get(name);
-                      m.add(marks);
-                      map.put(name,m);
+                      map.get(name).add(marks);
              }
              else{
                 throw new IllegalArgumentException("Enter valid marks value");
@@ -79,7 +78,6 @@ import java.util.ArrayList;
           ArrayList<Integer> m=map.get(name);
           double len=m.size();
           if(len==0) return 0;
-          if(len==1) return m.get(0);
           double sum=0;
           for(Integer val:m){
              sum+=val;
@@ -92,11 +90,67 @@ import java.util.ArrayList;
     }
     public String getTopStudent(){
         double highavg=0;
-          String toppername;
+          String toppername="";
         for(var it:map.entrySet()){
-           
+            String name=it.getKey();
+            double avg=getAverage(name);
+           if(avg>highavg){
+            toppername=name;
+            highavg=avg;
+           }
+           }
+        
+    return toppername;}
+
+    public void printReport(){
+
+        for(var it:map.entrySet()){
+                String name=it.getKey();
+            double avg=getAverage(name);
+            ArrayList<Integer> arr=it.getValue();
+        System.out.println("Name:"+name+"|| Marks are: "+arr+ "|| Average is: "+avg);
+          
         }
+        
+
     }
 
 
+ }
+
+ public class StudentGradeSystem{
+    public static void main(String[] args){
+        GradeSystem sys = new GradeSystem();
+sys.addStudent("Tanishq");
+sys.addStudent("Saksham");
+sys.addStudent("Raj");
+
+sys.addMarks("Tanishq", 85);
+sys.addMarks("Tanishq", 92);
+sys.addMarks("Tanishq", 78);
+sys.addMarks("Saksham", 90);
+sys.addMarks("Saksham", 88);
+sys.addMarks("Raj", 70);
+sys.addMarks("Raj", 75);
+sys.addMarks("Raj", 80);
+
+// test exception — add duplicate student
+try {
+    sys.addStudent("Tanishq");
+} catch (IllegalArgumentException e) {
+    System.out.println("❌ " + e.getMessage());
+}
+
+// test exception — invalid marks
+try {
+    sys.addMarks("Tanishq", 150);
+} catch (IllegalArgumentException e) {
+    System.out.println("❌ " + e.getMessage());
+}
+
+sys.printReport();
+System.out.println("Top student: " + sys.getTopStudent());
+
+
+    }
  }
